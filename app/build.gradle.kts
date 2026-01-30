@@ -56,11 +56,11 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
     // Сетевое взаимодействие (Retrofit)
-    implementation("com.squareup.retrofit2:retrofit:2.12.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.12.0")
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
     // Управление состоянием UI (ViewModel для Compose) – опционально, если ктото захочет лезть в MVVM
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
     // Асинхронные операции (Корутины)
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
+    implementation(libs.kotlinx.coroutines.android)
 
 }
