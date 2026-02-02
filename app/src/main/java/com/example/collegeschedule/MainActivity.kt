@@ -85,5 +85,5 @@ enum class AppDestinations(
     val icon: ImageVector,
 ) {
     HOME("Home", Icons.Default.Home),
-    FAVORITES("Favorites", Icons.Default.Favorite),
+    FAVORITES("Favorites", Icons.Default.Favorite)
 }
