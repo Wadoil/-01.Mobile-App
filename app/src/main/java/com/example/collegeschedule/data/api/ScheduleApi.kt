@@ -1,5 +1,4 @@
 package com.example.collegeschedule.data.api
-import android.R
 import com.example.collegeschedule.data.dto.GroupsDto
 import com.example.collegeschedule.data.dto.ScheduleByDateDto
 import retrofit2.http.GET
@@ -14,7 +13,7 @@ interface ScheduleApi {
     ): List<ScheduleByDateDto>
     @GET("api/groups/")
     suspend fun getGroups(
-        @Query("course") course: R.integer,
-        @Query("speciality") speciality: String
+        @Query("course") course: Int?,
+        @Query("speciality") speciality: String?
     ): List<GroupsDto>
 }

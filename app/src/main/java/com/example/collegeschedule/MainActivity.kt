@@ -6,7 +6,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Icon
@@ -24,7 +23,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import com.example.collegeschedule.data.api.ScheduleApi
 import com.example.collegeschedule.data.repository.ScheduleRepository
-import com.example.collegeschedule.ui.schedule.ScheduleScreen
+import com.example.collegeschedule.ui.groups.GroupsSearch
 import com.example.collegeschedule.ui.theme.CollegeScheduleTheme
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -44,6 +43,7 @@ class MainActivity : ComponentActivity() {
 fun CollegeScheduleApp() {
     var currentDestination by rememberSaveable {
         mutableStateOf(AppDestinations.HOME) }
+
     val retrofit = remember {
         Retrofit.Builder()
             .baseUrl("http://10.0.2.2:5195/") // localhost для Android Emulator
@@ -52,6 +52,7 @@ fun CollegeScheduleApp() {
     }
     val api = remember { retrofit.create(ScheduleApi::class.java) }
     val repository = remember { ScheduleRepository(api) }
+
     NavigationSuiteScaffold(
         navigationSuiteItems = {
             AppDestinations.entries.forEach {
@@ -72,10 +73,13 @@ fun CollegeScheduleApp() {
     {
         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
             when (currentDestination) {
-                AppDestinations.HOME -> ScheduleScreen()
+                AppDestinations.HOME -> GroupsSearch(
+                    modifier = Modifier.padding(innerPadding),
+                    repository = repository
+                )
                 AppDestinations.FAVORITES ->
-                    Text("Избранные группы", modifier =
-                        Modifier.padding(innerPadding))
+                    Text("Избранные группы",
+                        modifier = Modifier.padding(innerPadding))
             }
         }
     }
