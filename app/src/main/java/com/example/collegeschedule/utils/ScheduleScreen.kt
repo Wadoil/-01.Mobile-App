@@ -35,7 +35,6 @@ fun ScheduleScreen(groupName: String, onBackClick: () -> Unit) {
             TopAppBar(
                 title = { Text("Расписание: $groupName") },
                 navigationIcon = {
-                    // КНОПКА НАЗАД
                     IconButton(onClick = onBackClick) {
                         Icon(
                             Icons.Default.ArrowBack,
