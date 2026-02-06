@@ -19,6 +19,8 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -49,18 +51,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.collegeschedule.data.dto.GroupsDto
+import com.example.collegeschedule.data.repository.FavoritesRepository
 import com.example.collegeschedule.data.repository.ScheduleRepository
 import com.example.collegeschedule.ui.schedule.ScheduleScreen
 
 @Composable
 fun GroupsSearch(
     modifier: Modifier = Modifier,
-    repository: ScheduleRepository
+    repository: ScheduleRepository,
+    favoritesRepository: FavoritesRepository
 ) {
     val viewModel: GroupsSearchViewModel = viewModel(
-        factory = GroupsSearchViewModelFactory(repository)
+        factory = GroupsSearchViewModelFactory(repository, favoritesRepository)
     )
-    val state by viewModel.state.collectAsState()
+    val state = viewModel.state.collectAsState().value
+
 
     // Если группа выбрана - показываем расписание
     if (state.selectedGroup != null) {
@@ -171,7 +176,11 @@ fun GroupsSearch(
                         items(state.groups) { groupDto ->
                             GroupCard(
                                 group = groupDto,
-                                onClick = { viewModel.selectGroup(groupDto) }
+                                onClick = { viewModel.selectGroup(groupDto) },
+                                isFavorite = viewModel.isFavorite(groupDto.groupName),
+                                onToggleFavorite = {
+                                    viewModel.toggleFavorite(groupDto)
+                                }
                             )
                         }
                     }
@@ -290,7 +299,9 @@ fun SearchField(
 @Composable
 fun GroupCard(
     group: GroupsDto,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    isFavorite: Boolean,
+    onToggleFavorite: () -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -302,7 +313,8 @@ fun GroupCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Column(
                 modifier = Modifier.weight(1f)
@@ -324,22 +336,44 @@ fun GroupCard(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                Surface(
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                    shape = RoundedCornerShape(8.dp)
                 ) {
-                    Surface(
-                        color = MaterialTheme.colorScheme.primaryContainer,
-                        shape = RoundedCornerShape(8.dp)
-                    ) {
-                        Text(
-                            text = "${group.course} курс",
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.primary,
-                            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
-                        )
-                    }
+                    Text(
+                        text = "${group.course} курс",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+                    )
                 }
+            }
+
+            // Кнопка избранного
+            IconButton(
+                onClick = {
+                    onToggleFavorite()
+                },
+                modifier = Modifier.size(48.dp)
+            ) {
+                Icon(
+                    imageVector = if (isFavorite) {
+                        Icons.Filled.Favorite
+                    } else {
+                        Icons.Default.FavoriteBorder
+                    },
+                    contentDescription = if (isFavorite) {
+                        "Удалить из избранного"
+                    } else {
+                        "Добавить в избранное"
+                    },
+                    tint = if (isFavorite) {
+                        Color.Red
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    },
+                    modifier = Modifier.size(24.dp)
+                )
             }
         }
     }

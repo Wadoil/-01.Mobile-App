@@ -35,6 +35,7 @@ android {
     buildFeatures {
         compose = true
     }
+    buildToolsVersion = "36.1.0"
 }
 
 dependencies {
@@ -63,4 +64,17 @@ dependencies {
     // Асинхронные операции (Корутины)
     implementation(libs.kotlinx.coroutines.android)
 
+    // DataStore
+    implementation(libs.androidx.datastore.preferences)
+    // Для JSON сериализации (если нужно хранить сложные объекты)
+    implementation(libs.androidx.datastore.preferences.v120)
+
+    implementation(libs.androidx.lifecycle.viewmodel.compose.v270)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.kotlinx.coroutines.android)
+
+    // Compose
+    implementation(platform(libs.androidx.compose.bom.v20240200))
+    implementation(libs.androidx.compose.runtime)
+    implementation(libs.androidx.compose.runtime.livedata)
 }

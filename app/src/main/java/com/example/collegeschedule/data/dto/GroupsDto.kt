@@ -4,4 +4,4 @@ data class GroupsDto(
     val speciality: String,
     val course: Int,
     val groupName: String
-)
+)   
